@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchachZugCheckerUI"
         xmlns:svg1="clr-namespace:SVGImage.SVG;assembly=SVGImage"
+        d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
         mc:Ignorable="d" 
         Title="Schach Zug Checker" Height="800" Width="800">
     <Grid>
@@ -13,8 +14,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="0">
-            <Button Name="bt_Open" Margin="4" Width="100" Height="25" Content="Open" Click="Bt_Open_OnClick" Visibility="{Binding OpenVisi}"/>
-            <Button Name="bt_Close" Margin="4" Width="100" Height="25" Content="Close" Click="Bt_Close_OnClick" Visibility="{Binding CloseVisi}"/>
+            <Button Name="bt_Open" Margin="4" Width="100" Height="25" Content="Open" Command="{Binding OpenCommand}" Visibility="{Binding OpenVisi}"/>
+            <Button Name="bt_Close" Margin="4" Width="100" Height="25" Content="Close" Command="{Binding CloseCommand}" Visibility="{Binding CloseVisi}"/>
         </StackPanel>
         <Grid Name="grid" Grid.Row="1" Margin="8" Width="700" Height="700">
             <Grid.RowDefinitions>

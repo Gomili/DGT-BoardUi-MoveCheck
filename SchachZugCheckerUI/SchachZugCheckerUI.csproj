@@ -7,6 +7,16 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <Target Name="RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">
+	<!--Work around https://github.com/dotnet/wpf/issues/6792--> 
+
+	<ItemGroup>
+		<FilteredAnalyzer Include="@(Analyzer-&gt;Distinct())" />
+			<Analyzer Remove="@(Analyzer)" />
+			<Analyzer Include="@(FilteredAnalyzer)" />
+	</ItemGroup>
+  </Target>
+
   <ItemGroup>
     <None Remove="Assets\Chess_Leer.svg" />
     <None Remove="Assets\Chess_SB.svg" />
