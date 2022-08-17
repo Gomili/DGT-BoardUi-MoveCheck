@@ -33,22 +33,27 @@ public class DgtSerDriver
 
     public event UpdateBoardEventHandler UpdateBoard;
 
-    public void Open()
+    public bool ConState { get; set; } = false;
+
+    public void Open(string comport)
     {
-        _serialPort = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
+        _serialPort = new SerialPort(comport, 9600, Parity.None, 8, StopBits.One);
         try
         {
-            _serialPort.Open();
-            _serialPort.DataReceived += SerialPort_DataReceived;
-            var a = _serialPort.IsOpen;
-            if (a)
+            if (_serialPort != null)
             {
-                _timer = new Timer();
-                _timer.Interval = 300;
+                _serialPort.Open();
+                ConState = _serialPort.IsOpen;
+                if (ConState)
+                {
+                    _serialPort.DataReceived += SerialPort_DataReceived;
+                    _timer = new Timer();
+                    _timer.Interval = 300;
 
-                _timer.Elapsed += Timer_Elapsed;
-                _timer.AutoReset = true;
-                _timer.Enabled = true;
+                    _timer.Elapsed += Timer_Elapsed;
+                    _timer.AutoReset = true;
+                    _timer.Enabled = true;
+                }
             }
         }
         catch (Exception e)
@@ -60,14 +65,20 @@ public class DgtSerDriver
     private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
     {
         var buffer = new byte[] { 0x42 };
-        if (_serialPort.IsOpen)
+        if (_serialPort is not null && _serialPort.IsOpen)
+        {
+            ConState = true;
             _serialPort?.Write(buffer, 0, 1);
+        }
+        else
+            ConState = false;
     }
 
     public void Close()
     {
         if (_serialPort is not null)
         {
+            ConState = false;
             _serialPort.Close();
             _serialPort.DataReceived -= SerialPort_DataReceived;
             _serialPort.Dispose();

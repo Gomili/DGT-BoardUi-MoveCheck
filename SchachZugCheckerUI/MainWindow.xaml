@@ -17,6 +17,12 @@
             <Button Name="bt_Open" Margin="4" Width="100" Height="25" Content="Open" Command="{Binding OpenCommand}" Visibility="{Binding OpenVisi}"/>
             <Button Name="bt_Close" Margin="4" Width="100" Height="25" Content="Close" Command="{Binding CloseCommand}" Visibility="{Binding CloseVisi}"/>
         </StackPanel>
+        <StackPanel Margin="0,0,8,0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right">
+            <TextBlock Margin="4" Text="Comport:" VerticalAlignment="Center" FontSize="16"/>
+            <TextBox Text="{Binding Comport}" Width="100" Height="25" VerticalContentAlignment="Center" IsEnabled="{Binding TextBoxEnable}"/>
+            <TextBlock Margin="4" Text="Connect:" VerticalAlignment="Center" FontSize="16"/>
+            <Border Background="{Binding StatusColorBrush}" CornerRadius="50" Width="20" Height="20"/>
+        </StackPanel>
         <Grid Name="grid" Grid.Row="1" Margin="8" Width="700" Height="700">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -59,140 +65,141 @@
             <TextBlock Grid.Row="8" Grid.Column="1" Text="A" HorizontalAlignment="Center"/>
 
             <Border Grid.Row="7" Grid.Column="1" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="1" FileSource="{Binding A1}"/>
+            <!--<Border Margin="10" Grid.Row="7" Grid.Column="1" Background="Green" CornerRadius="50"/>-->
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="1" FileSource="{Binding A1.Figur}"/>
             <Border Grid.Row="7" Grid.Column="2" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="2" FileSource="{Binding B1}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="2" FileSource="{Binding B1.Figur}"/>
             <Border Grid.Row="7" Grid.Column="3" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="3" FileSource="{Binding C1}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="3" FileSource="{Binding C1.Figur}"/>
             <Border Grid.Row="7" Grid.Column="4" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="4" FileSource="{Binding D1}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="4" FileSource="{Binding D1.Figur}"/>
             <Border Grid.Row="7" Grid.Column="5" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="5" FileSource="{Binding E1}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="5" FileSource="{Binding E1.Figur}"/>
             <Border Grid.Row="7" Grid.Column="6" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="6" FileSource="{Binding F1}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="6" FileSource="{Binding F1.Figur}"/>
             <Border Grid.Row="7" Grid.Column="7" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="7" FileSource="{Binding G1}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="7" FileSource="{Binding G1.Figur}"/>
             <Border Grid.Row="7" Grid.Column="8" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="8" FileSource="{Binding H1}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="7" Grid.Column="8" FileSource="{Binding H1.Figur}"/>
 
             <Border Grid.Row="6" Grid.Column="1" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="1" FileSource="{Binding A2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="1" FileSource="{Binding A2.Figur}"/>
             <Border Grid.Row="6" Grid.Column="2" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="2" FileSource="{Binding B2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="2" FileSource="{Binding B2.Figur}"/>
             <Border Grid.Row="6" Grid.Column="3" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="3" FileSource="{Binding C2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="3" FileSource="{Binding C2.Figur}"/>
             <Border Grid.Row="6" Grid.Column="4" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="4" FileSource="{Binding D2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="4" FileSource="{Binding D2.Figur}"/>
             <Border Grid.Row="6" Grid.Column="5" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="5" FileSource="{Binding E2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="5" FileSource="{Binding E2.Figur}"/>
             <Border Grid.Row="6" Grid.Column="6" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="6" FileSource="{Binding F2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="6" FileSource="{Binding F2.Figur}"/>
             <Border Grid.Row="6" Grid.Column="7" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="7" FileSource="{Binding G2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="7" FileSource="{Binding G2.Figur}"/>
             <Border Grid.Row="6" Grid.Column="8" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="8" FileSource="{Binding H2}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="6" Grid.Column="8" FileSource="{Binding H2.Figur}"/>
 
             <Border Grid.Row="5" Grid.Column="1" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="1" FileSource="{Binding A3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="1" FileSource="{Binding A3.Figur}"/>
             <Border Grid.Row="5" Grid.Column="2" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="2" FileSource="{Binding B3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="2" FileSource="{Binding B3.Figur}"/>
             <Border Grid.Row="5" Grid.Column="3" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="3" FileSource="{Binding C3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="3" FileSource="{Binding C3.Figur}"/>
             <Border Grid.Row="5" Grid.Column="4" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="4" FileSource="{Binding D3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="4" FileSource="{Binding D3.Figur}"/>
             <Border Grid.Row="5" Grid.Column="5" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="5" FileSource="{Binding E3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="5" FileSource="{Binding E3.Figur}"/>
             <Border Grid.Row="5" Grid.Column="6" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="6" FileSource="{Binding F3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="6" FileSource="{Binding F3.Figur}"/>
             <Border Grid.Row="5" Grid.Column="7" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="7" FileSource="{Binding G3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="7" FileSource="{Binding G3.Figur}"/>
             <Border Grid.Row="5" Grid.Column="8" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="8" FileSource="{Binding H3}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="5" Grid.Column="8" FileSource="{Binding H3.Figur}"/>
 
             <Border Grid.Row="4" Grid.Column="1" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="1" FileSource="{Binding A4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="1" FileSource="{Binding A4.Figur}"/>
             <Border Grid.Row="4" Grid.Column="2" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="2" FileSource="{Binding B4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="2" FileSource="{Binding B4.Figur}"/>
             <Border Grid.Row="4" Grid.Column="3" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="3" FileSource="{Binding C4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="3" FileSource="{Binding C4.Figur}"/>
             <Border Grid.Row="4" Grid.Column="4" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="4" FileSource="{Binding D4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="4" FileSource="{Binding D4.Figur}"/>
             <Border Grid.Row="4" Grid.Column="5" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="5" FileSource="{Binding E4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="5" FileSource="{Binding E4.Figur}"/>
             <Border Grid.Row="4" Grid.Column="6" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="6" FileSource="{Binding F4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="6" FileSource="{Binding F4.Figur}"/>
             <Border Grid.Row="4" Grid.Column="7" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="7" FileSource="{Binding G4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="7" FileSource="{Binding G4.Figur}"/>
             <Border Grid.Row="4" Grid.Column="8" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="8" FileSource="{Binding H4}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="4" Grid.Column="8" FileSource="{Binding H4.Figur}"/>
 
             <Border Grid.Row="3" Grid.Column="1" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="1" FileSource="{Binding A5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="1" FileSource="{Binding A5.Figur}"/>
             <Border Grid.Row="3" Grid.Column="2" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="2" FileSource="{Binding B5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="2" FileSource="{Binding B5.Figur}"/>
             <Border Grid.Row="3" Grid.Column="3" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="3" FileSource="{Binding C5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="3" FileSource="{Binding C5.Figur}"/>
             <Border Grid.Row="3" Grid.Column="4" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="4" FileSource="{Binding D5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="4" FileSource="{Binding D5.Figur}"/>
             <Border Grid.Row="3" Grid.Column="5" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="5" FileSource="{Binding E5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="5" FileSource="{Binding E5.Figur}"/>
             <Border Grid.Row="3" Grid.Column="6" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="6" FileSource="{Binding F5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="6" FileSource="{Binding F5.Figur}"/>
             <Border Grid.Row="3" Grid.Column="7" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="7" FileSource="{Binding G5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="7" FileSource="{Binding G5.Figur}"/>
             <Border Grid.Row="3" Grid.Column="8" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="8" FileSource="{Binding H5}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="3" Grid.Column="8" FileSource="{Binding H5.Figur}"/>
 
             <Border Grid.Row="2" Grid.Column="1" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="1" FileSource="{Binding A6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="1" FileSource="{Binding A6.Figur}"/>
             <Border Grid.Row="2" Grid.Column="2" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="2" FileSource="{Binding B6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="2" FileSource="{Binding B6.Figur}"/>
             <Border Grid.Row="2" Grid.Column="3" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="3" FileSource="{Binding C6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="3" FileSource="{Binding C6.Figur}"/>
             <Border Grid.Row="2" Grid.Column="4" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="4" FileSource="{Binding D6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="4" FileSource="{Binding D6.Figur}"/>
             <Border Grid.Row="2" Grid.Column="5" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="5" FileSource="{Binding E6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="5" FileSource="{Binding E6.Figur}"/>
             <Border Grid.Row="2" Grid.Column="6" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="6" FileSource="{Binding F6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="6" FileSource="{Binding F6.Figur}"/>
             <Border Grid.Row="2" Grid.Column="7" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="7" FileSource="{Binding G6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="7" FileSource="{Binding G6.Figur}"/>
             <Border Grid.Row="2" Grid.Column="8" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="8" FileSource="{Binding H6}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="2" Grid.Column="8" FileSource="{Binding H6.Figur}"/>
 
             <Border Grid.Row="1" Grid.Column="1" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="1" FileSource="{Binding A7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="1" FileSource="{Binding A7.Figur}"/>
             <Border Grid.Row="1" Grid.Column="2" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="2" FileSource="{Binding B7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="2" FileSource="{Binding B7.Figur}"/>
             <Border Grid.Row="1" Grid.Column="3" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="3" FileSource="{Binding C7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="3" FileSource="{Binding C7.Figur}"/>
             <Border Grid.Row="1" Grid.Column="4" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="4" FileSource="{Binding D7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="4" FileSource="{Binding D7.Figur}"/>
             <Border Grid.Row="1" Grid.Column="5" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="5" FileSource="{Binding E7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="5" FileSource="{Binding E7.Figur}"/>
             <Border Grid.Row="1" Grid.Column="6" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="6" FileSource="{Binding F7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="6" FileSource="{Binding F7.Figur}"/>
             <Border Grid.Row="1" Grid.Column="7" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="7" FileSource="{Binding G7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="7" FileSource="{Binding G7.Figur}"/>
             <Border Grid.Row="1" Grid.Column="8" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="8" FileSource="{Binding H7}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="1" Grid.Column="8" FileSource="{Binding H7.Figur}"/>
 
             <Border Grid.Row="0" Grid.Column="1" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="1" FileSource="{Binding A8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="1" FileSource="{Binding A8.Figur}"/>
             <Border Grid.Row="0" Grid.Column="2" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="2" FileSource="{Binding B8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="2" FileSource="{Binding B8.Figur}"/>
             <Border Grid.Row="0" Grid.Column="3" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="3" FileSource="{Binding C8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="3" FileSource="{Binding C8.Figur}"/>
             <Border Grid.Row="0" Grid.Column="4" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="4" FileSource="{Binding D8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="4" FileSource="{Binding D8.Figur}"/>
             <Border Grid.Row="0" Grid.Column="5" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="5" FileSource="{Binding E8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="5" FileSource="{Binding E8.Figur}"/>
             <Border Grid.Row="0" Grid.Column="6" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="6" FileSource="{Binding F8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="6" FileSource="{Binding F8.Figur}"/>
             <Border Grid.Row="0" Grid.Column="7" Background="Wheat"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="7" FileSource="{Binding G8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="7" FileSource="{Binding G8.Figur}"/>
             <Border Grid.Row="0" Grid.Column="8" Background="SaddleBrown"/>
-            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="8" FileSource="{Binding H8}"/>
+            <svg1:SVGImage Margin="8" Grid.Row="0" Grid.Column="8" FileSource="{Binding H8.Figur}"/>
         </Grid>
     </Grid>
 </Window>
