@@ -34,6 +34,7 @@ public class DgtSerDriver
     public event UpdateBoardEventHandler UpdateBoard;
 
     public bool ConState { get; set; } = false;
+    public bool MoveHelp { get; set; } = false;
 
     public void Open(string comport)
     {

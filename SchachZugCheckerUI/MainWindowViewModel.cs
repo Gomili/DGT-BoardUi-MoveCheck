@@ -84,6 +84,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private Brush _statusColorBrush = new SolidColorBrush(Colors.DarkRed);
     [ObservableProperty] private bool _textBoxEnable = true;
     [ObservableProperty] private string _comport = "COM3";
+    [ObservableProperty] private bool _moveHelp = false;
     
     public MainWindowViewModel()
     {
@@ -140,6 +141,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StatusColorBrush = new SolidColorBrush(Colors.Green);
             TextBoxEnable = false;
+            DgtSerDriver.MoveHelp = MoveHelp;
             OpenVisi = Visibility.Hidden;
             CloseVisi = Visibility.Visible;
             DgtSerDriver.UpdateBoard += DgtSerDriverOnUpdateBoard;
@@ -164,6 +166,13 @@ public partial class MainWindowViewModel : ObservableObject
 
             DgtSerDriver.UpdateBoard -= DgtSerDriverOnUpdateBoard;
         }
+    }
+
+    [RelayCommand]
+    private void HelpSwitched(bool mode)
+    {
+        if (DgtSerDriver is not null)
+            DgtSerDriver.MoveHelp = mode;
     }
 
     private void DgtSerDriverOnUpdateBoard(byte[] data)
