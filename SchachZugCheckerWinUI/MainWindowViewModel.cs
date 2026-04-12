@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Dispatching;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -30,7 +31,12 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] public partial bool TextBoxEnable { get; set; } = true;
     [ObservableProperty] public partial string Comport { get; set; } = "COM3";
     [ObservableProperty] public partial bool MoveHelp { get; set; } = false;
-    [ObservableProperty] public partial bool IsWhiteTurn { get; set; } = true;
+    [ObservableProperty] 
+    [NotifyPropertyChangedFor(nameof(WhiteTurnBrush))]
+    [NotifyPropertyChangedFor(nameof(BlackTurnBrush))]
+    [NotifyPropertyChangedFor(nameof(WhiteTurnBorderBrush))]
+    [NotifyPropertyChangedFor(nameof(BlackTurnBorderBrush))]
+    public partial bool IsWhiteTurn { get; set; } = true;
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(WhiteTimeStr))] public partial TimeSpan WhiteTime { get; set; } = TimeSpan.Zero;
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(BlackTimeStr))] public partial TimeSpan BlackTime { get; set; } = TimeSpan.Zero;
 
@@ -264,10 +270,6 @@ public partial class MainWindowViewModel : ObservableObject
         from.Opacity = 1.0; // Reset opacity for the source field
 
         IsWhiteTurn = !IsWhiteTurn;
-        OnPropertyChanged(nameof(WhiteTurnBrush));
-        OnPropertyChanged(nameof(BlackTurnBrush));
-        OnPropertyChanged(nameof(WhiteTurnBorderBrush));
-        OnPropertyChanged(nameof(BlackTurnBorderBrush));
 
         ClearHighlights();
         _selectedField = null;
@@ -286,6 +288,8 @@ public partial class MainWindowViewModel : ObservableObject
     public MainWindowViewModel()
     {
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        ElementSoundPlayer.State = ElementSoundPlayerState.On;
+        ElementSoundPlayer.Volume = 1.0;
         InitializeBoard();
         ResetBoard();
         
@@ -329,6 +333,8 @@ public partial class MainWindowViewModel : ObservableObject
         WhiteTime = TimeSpan.Zero;
         BlackTime = TimeSpan.Zero;
         _chessState = new ChessState();
+        IsWhiteTurn = true;
+        GameHistory.Clear();
 
         foreach (var field in ChessFields) field.Figur = Files.Leer;
 
@@ -393,6 +399,7 @@ public partial class MainWindowViewModel : ObservableObject
                 _dgtDriver.Open(foundPort);
                 if (_dgtDriver.ConState)
                 {
+                    ResetBoard(); // Reset UI and history when connecting
                     StatusColorBrush = new SolidColorBrush(Colors.Green);
                     TextBoxEnable = false;
                     _dgtDriver.MoveHelp = MoveHelp;
@@ -545,10 +552,6 @@ public partial class MainWindowViewModel : ObservableObject
                 }
 
                 IsWhiteTurn = !IsWhiteTurn;
-                OnPropertyChanged(nameof(WhiteTurnBrush));
-                OnPropertyChanged(nameof(BlackTurnBrush));
-                OnPropertyChanged(nameof(WhiteTurnBorderBrush));
-                OnPropertyChanged(nameof(BlackTurnBorderBrush));
             }
             
             ClearHighlights();
@@ -556,20 +559,19 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    [DllImport("user32.dll")]
-    public static extern bool MessageBeep(uint uType);
-
     private void CheckForCheck()
     {
         if (ChessEngine.IsInCheck(IsWhiteTurn, ChessFields))
         {
             try
             {
-                MessageBeep(0); // 0 is the default beep sound
+                // Play sound twice with a tiny delay to simulate "double volume" / more impact
+                ElementSoundPlayer.Play(ElementSoundKind.Invoke);
+                Task.Delay(50).ContinueWith(_ => _dispatcherQueue.TryEnqueue(() => ElementSoundPlayer.Play(ElementSoundKind.Invoke)));
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ViewModel] Failed to play beep: {ex.Message}");
+                Debug.WriteLine($"[ViewModel] Failed to play sound: {ex.Message}");
             }
         }
     }
