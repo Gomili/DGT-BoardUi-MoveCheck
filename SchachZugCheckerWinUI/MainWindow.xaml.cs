@@ -57,6 +57,10 @@ namespace SchachZugCheckerWinUI
         private void Field_DragOver(object sender, DragEventArgs args)
         {
             args.AcceptedOperation = DataPackageOperation.Move;
+            
+            // Hide the "Move to" text and the arrow glyph during drag
+            args.DragUIOverride.IsCaptionVisible = false;
+            args.DragUIOverride.IsGlyphVisible = false;
         }
 
         private void Field_Drop(object sender, DragEventArgs args)

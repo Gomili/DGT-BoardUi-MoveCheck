@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -46,6 +47,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     private VisualChessField? _selectedField;
     private VisualChessField? _lastLiftedField;
+    private string? _draggedFigur;
+
+    private ChessState _chessState = new();
 
     public Func<Task<bool>>? AskConfirmationAsync { get; set; }
 
@@ -72,40 +76,54 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _selectedField = field;
-        if (MoveHelp)
+        _draggedFigur = field.Figur;
+
+        // Delay hiding the figure and showing highlights so WinUI can capture the drag visual correctly
+        Task.Run(async () =>
         {
-            HighlightLegalMoves(field);
-        }
+            await Task.Delay(250); // Increased delay slightly
+            _dispatcherQueue.TryEnqueue(() => 
+            {
+                if (_selectedField == field)
+                {
+                    field.Opacity = 0.0;
+                    if (MoveHelp)
+                    {
+                        HighlightLegalMoves(field);
+                    }
+                }
+            });
+        });
     }
 
     public void OnDrop(VisualChessField toField)
     {
         if (_dgtDriver.ConState || _selectedField == null) return;
-        if (toField == _selectedField)
-        {
-            ClearHighlights();
-            _selectedField = null;
-            return;
-        }
+        
+        ClearHighlights();
 
-        var legalMoves = ChessEngine.GetLegalMoves(_selectedField, ChessFields);
+        if (toField == _selectedField) return;
+
+        var legalMoves = ChessEngine.GetLegalMoves(_selectedField, ChessFields, _draggedFigur, _chessState);
         if (legalMoves.Contains(toField.BoardPos))
         {
             ExecuteMove(_selectedField, toField);
-        }
-        else
-        {
-            ClearHighlights();
-            _selectedField = null;
         }
     }
 
     public void OnDragCompleted()
     {
-        // We only clear highlights if we didn't just execute a move (which clears highlights anyway)
-        // But to be safe:
+        if (_selectedField != null)
+        {
+            if (!string.IsNullOrEmpty(_draggedFigur))
+            {
+                _selectedField.Figur = _draggedFigur;
+            }
+            _selectedField.Opacity = 1.0;
+        }
         ClearHighlights();
         _selectedField = null;
+        _draggedFigur = null;
     }
 
     [RelayCommand]
@@ -160,7 +178,7 @@ public partial class MainWindowViewModel : ObservableObject
     private void HighlightLegalMoves(VisualChessField selectedField)
     {
         ClearHighlights();
-        var legalMoves = ChessEngine.GetLegalMoves(selectedField, ChessFields);
+        var legalMoves = ChessEngine.GetLegalMoves(selectedField, ChessFields, null, _chessState);
         foreach (var pos in legalMoves)
         {
             var field = ChessFields.FirstOrDefault(f => f.BoardPos == pos);
@@ -180,11 +198,70 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void ExecuteMove(VisualChessField from, VisualChessField to)
     {
+        string? figurToMove = !string.IsNullOrEmpty(_draggedFigur) ? _draggedFigur : from.Figur;
+        bool isWhite = figurToMove?.ToLower().Contains("_w") ?? false;
         string moveText = $"{from.BoardPos}-{to.BoardPos}";
-        GameHistory.Insert(0, moveText); // Newest at top
 
-        to.Figur = from.Figur;
+        // --- SPECIAL MOVES LOGIC ---
+        
+        // 1. Castling detection and execution
+        if (figurToMove?.ToLower().Contains("_wk") == true || figurToMove?.ToLower().Contains("_sk") == true)
+        {
+            int colDiff = to.Column - from.Column;
+            if (Math.Abs(colDiff) == 2)
+            {
+                // Castling!
+                moveText = colDiff > 0 ? "O-O" : "O-O-O";
+                int rookSourceCol = colDiff > 0 ? 7 : 0; // H or A
+                int rookDestCol = colDiff > 0 ? to.Column - 1 : to.Column + 1;
+                var rookFrom = ChessFields.FirstOrDefault(f => f.Row == from.Row && f.Column == rookSourceCol);
+                var rookTo = ChessFields.FirstOrDefault(f => f.Row == from.Row && f.Column == rookDestCol);
+                if (rookFrom != null && rookTo != null)
+                {
+                    rookTo.Figur = rookFrom.Figur;
+                    rookFrom.Figur = Files.Leer;
+                }
+            }
+        }
+
+        // 2. En Passant detection and execution
+        if ((figurToMove?.ToLower().Contains("_wb") == true || figurToMove?.ToLower().Contains("_sb") == true) && to.BoardPos == _chessState.EnPassantTarget)
+        {
+            // Capture the pawn behind the target square
+            int captureRow = from.Row; // The row where the enemy pawn was
+            int captureCol = to.Column;
+            var capturedPawnField = ChessFields.FirstOrDefault(f => f.Row == captureRow && f.Column == captureCol);
+            if (capturedPawnField != null) capturedPawnField.Figur = Files.Leer;
+        }
+
+        // --- UPDATE CHESS STATE ---
+
+        // Update moved flags
+        if (from.BoardPos == "E1") _chessState.WhiteKingMoved = true;
+        if (from.BoardPos == "E8") _chessState.BlackKingMoved = true;
+        if (from.BoardPos == "A1") _chessState.WhiteRookAMoved = true;
+        if (from.BoardPos == "H1") _chessState.WhiteRookHMoved = true;
+        if (from.BoardPos == "A8") _chessState.BlackRookAMoved = true;
+        if (from.BoardPos == "H8") _chessState.BlackRookHMoved = true;
+
+        // Update En Passant target
+        _chessState.EnPassantTarget = null;
+        if (figurToMove?.ToLower().Contains("_wb") == true || figurToMove?.ToLower().Contains("_sb") == true)
+        {
+            if (Math.Abs(to.Row - from.Row) == 2)
+            {
+                // Double step!
+                int targetRow = (from.Row + to.Row) / 2;
+                var targetField = ChessFields.FirstOrDefault(f => f.Row == targetRow && f.Column == from.Column);
+                if (targetField != null) _chessState.EnPassantTarget = targetField.BoardPos;
+            }
+        }
+
+        // --- EXECUTE BASE MOVE ---
+        GameHistory.Insert(0, moveText); // Newest at top
+        to.Figur = figurToMove;
         from.Figur = Files.Leer;
+        from.Opacity = 1.0; // Reset opacity for the source field
 
         IsWhiteTurn = !IsWhiteTurn;
         OnPropertyChanged(nameof(WhiteTurnBrush));
@@ -194,6 +271,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         ClearHighlights();
         _selectedField = null;
+        _draggedFigur = null;
+        CheckForCheck();
     }
 
     partial void OnMoveHelpChanged(bool value)
@@ -249,6 +328,7 @@ public partial class MainWindowViewModel : ObservableObject
         _gameTimer?.Stop();
         WhiteTime = TimeSpan.Zero;
         BlackTime = TimeSpan.Zero;
+        _chessState = new ChessState();
 
         foreach (var field in ChessFields) field.Figur = Files.Leer;
 
@@ -412,9 +492,58 @@ public partial class MainWindowViewModel : ObservableObject
         if (placedField != null && _lastLiftedField != null)
         {
             string moveText = $"{_lastLiftedField.BoardPos}-{placedField.BoardPos}";
-            if (!GameHistory.Contains(moveText) || GameHistory.FirstOrDefault() != moveText)
+            bool isWhite = placedFigur?.ToLower().Contains("_w") ?? false;
+
+            // Detect Castling in DGT
+            if (placedFigur?.ToLower().Contains("k") == true && Math.Abs(placedField.Column - _lastLiftedField.Column) == 2)
+            {
+                moveText = placedField.Column > _lastLiftedField.Column ? "O-O" : "O-O-O";
+            }
+            
+            // Ignore Rook moves that are part of a castling (if King already moved)
+            bool isRookCompletingCastling = false;
+            if (placedFigur?.ToLower().Contains("t") == true)
+            {
+                var lastMove = GameHistory.FirstOrDefault();
+                if (lastMove == "O-O" || lastMove == "O-O-O")
+                {
+                    // Check if this rook move matches the castling side
+                    // If O-O, White Rook H1-F1 or Black Rook H8-F8
+                    // If O-O-O, White Rook A1-D1 or Black Rook A8-D8
+                    if (isWhite)
+                    {
+                        if (lastMove == "O-O" && _lastLiftedField.BoardPos == "H1" && placedField.BoardPos == "F1") isRookCompletingCastling = true;
+                        if (lastMove == "O-O-O" && _lastLiftedField.BoardPos == "A1" && placedField.BoardPos == "D1") isRookCompletingCastling = true;
+                    }
+                    else
+                    {
+                        if (lastMove == "O-O" && _lastLiftedField.BoardPos == "H8" && placedField.BoardPos == "F8") isRookCompletingCastling = true;
+                        if (lastMove == "O-O-O" && _lastLiftedField.BoardPos == "A8" && placedField.BoardPos == "D8") isRookCompletingCastling = true;
+                    }
+                }
+            }
+
+            if (!isRookCompletingCastling && (!GameHistory.Contains(moveText) || GameHistory.FirstOrDefault() != moveText))
             {
                 GameHistory.Insert(0, moveText);
+                
+                // Update ChessState from DGT move
+                if (_lastLiftedField.BoardPos == "E1") _chessState.WhiteKingMoved = true;
+                if (_lastLiftedField.BoardPos == "E8") _chessState.BlackKingMoved = true;
+                if (_lastLiftedField.BoardPos == "A1") _chessState.WhiteRookAMoved = true;
+                if (_lastLiftedField.BoardPos == "H1") _chessState.WhiteRookHMoved = true;
+                if (_lastLiftedField.BoardPos == "A8") _chessState.BlackRookAMoved = true;
+                if (_lastLiftedField.BoardPos == "H8") _chessState.BlackRookHMoved = true;
+
+                // En Passant target update for DGT
+                _chessState.EnPassantTarget = null;
+                if (placedFigur?.ToLower().Contains("b") == true && Math.Abs(placedField.Row - _lastLiftedField.Row) == 2)
+                {
+                    int targetRow = (_lastLiftedField.Row + placedField.Row) / 2;
+                    var targetField = ChessFields.FirstOrDefault(f => f.Row == targetRow && f.Column == _lastLiftedField.Column);
+                    if (targetField != null) _chessState.EnPassantTarget = targetField.BoardPos;
+                }
+
                 IsWhiteTurn = !IsWhiteTurn;
                 OnPropertyChanged(nameof(WhiteTurnBrush));
                 OnPropertyChanged(nameof(BlackTurnBrush));
@@ -424,6 +553,24 @@ public partial class MainWindowViewModel : ObservableObject
             
             ClearHighlights();
             _lastLiftedField = null;
+        }
+    }
+
+    [DllImport("user32.dll")]
+    public static extern bool MessageBeep(uint uType);
+
+    private void CheckForCheck()
+    {
+        if (ChessEngine.IsInCheck(IsWhiteTurn, ChessFields))
+        {
+            try
+            {
+                MessageBeep(0); // 0 is the default beep sound
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ViewModel] Failed to play beep: {ex.Message}");
+            }
         }
     }
 

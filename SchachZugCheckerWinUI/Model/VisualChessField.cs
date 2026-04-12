@@ -18,6 +18,7 @@ namespace SchachZugCheckerWinUI.Model
         [ObservableProperty] public partial int Row { get; set; }
         [ObservableProperty] public partial int Column { get; set; }
         [ObservableProperty] public partial bool IsDark { get; set; }
+        [ObservableProperty] public partial double Opacity { get; set; } = 1.0;
 
         public Microsoft.UI.Xaml.Media.Brush BackgroundBrush => IsDark ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.SaddleBrown) : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Wheat);
         

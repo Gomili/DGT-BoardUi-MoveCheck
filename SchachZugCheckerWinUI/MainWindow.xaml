@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid AllowDrop="True" DragOver="Field_DragOver">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -93,7 +93,7 @@
                         <DataTemplate x:DataType="model:VisualChessField">
                             <Grid Width="87.5" Height="87.5" AllowDrop="True" DragOver="Field_DragOver" Drop="Field_Drop" Background="Transparent" Tapped="Field_Tapped">
                                 <Border Background="{Binding BackgroundBrush}"/>
-                                <Image Source="{Binding Figur}" Margin="8" CanDrag="True" DragStarting="Image_DragStarting" DropCompleted="Image_DropCompleted"/>
+                                <Image Source="{Binding Figur}" Margin="8" CanDrag="True" DragStarting="Image_DragStarting" DropCompleted="Image_DropCompleted" Opacity="{Binding Opacity}"/>
                                 <Border BorderBrush="{Binding HighlightBrush}" BorderThickness="4" 
                                         Visibility="{Binding HighlightVisibility}"/>
                             </Grid>
