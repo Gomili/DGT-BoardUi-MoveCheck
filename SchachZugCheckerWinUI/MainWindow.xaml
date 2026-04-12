@@ -21,6 +21,7 @@
             <TextBlock Margin="4" Text="Connect:" VerticalAlignment="Center" FontSize="16"/>
             <Border Background="{Binding StatusColorBrush}" CornerRadius="50" Width="20" Height="20" Margin="4"/>
             
+            <Button x:Name="bt_Restart" Margin="4" Width="100" Content="Reset" Command="{Binding RestartCommand}"/>
             <Button x:Name="bt_Open" Margin="4" Width="100" Content="Open" Command="{Binding OpenCommand}" Visibility="{Binding OpenVisi}"/>
             <Button x:Name="bt_Close" Margin="4" Width="100" Content="Close" Command="{Binding CloseCommand}" Visibility="{Binding CloseVisi}"/>
         </StackPanel>
@@ -111,8 +112,21 @@
                 <TextBlock Text="Spielverlauf" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
                 <ListView Grid.Row="1" ItemsSource="{Binding GameHistory}" Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" FontSize="14"/>
+                        <DataTemplate x:DataType="model:GameHistoryEntry">
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Border Grid.Column="0" Background="{Binding PlayerColorBrush}" BorderBrush="{Binding PlayerBorderBrush}" 
+                                        BorderThickness="1" CornerRadius="50" Width="12" Height="12" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                
+                                <TextBlock Grid.Column="1" Text="{Binding Time}" FontSize="12" Foreground="Gray" VerticalAlignment="Center"/>
+                                
+                                <TextBlock Grid.Column="2" Text="{Binding Move}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

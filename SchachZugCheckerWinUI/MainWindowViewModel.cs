@@ -23,7 +23,7 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly DispatcherQueue _dispatcherQueue;
 
     [ObservableProperty] public partial ObservableCollection<VisualChessField> ChessFields { get; set; } = new();
-    [ObservableProperty] public partial ObservableCollection<string> GameHistory { get; set; } = new();
+    [ObservableProperty] public partial ObservableCollection<GameHistoryEntry> GameHistory { get; set; } = new();
 
     [ObservableProperty] public partial Visibility CloseVisi { get; set; } = Visibility.Collapsed;
     [ObservableProperty] public partial Visibility OpenVisi { get; set; } = Visibility.Visible;
@@ -58,7 +58,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private ChessState _chessState = new();
 
-    public Func<Task<bool>>? AskConfirmationAsync { get; set; }
+    public Func<string, string, Task<bool>>? AskConfirmationAsync { get; set; }
 
     [RelayCommand]
     public void FieldTapped(VisualChessField field)
@@ -207,7 +207,9 @@ public partial class MainWindowViewModel : ObservableObject
     {
         string? figurToMove = !string.IsNullOrEmpty(_draggedFigur) ? _draggedFigur : from.Figur;
         bool isWhite = figurToMove?.ToLower().Contains("_w") ?? false;
-        string moveText = $"{from.BoardPos}-{to.BoardPos}";
+        
+        bool isCastling = false;
+        bool isEnPassant = false;
 
         // --- SPECIAL MOVES LOGIC ---
         
@@ -218,7 +220,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (Math.Abs(colDiff) == 2)
             {
                 // Castling!
-                moveText = colDiff > 0 ? "O-O" : "O-O-O";
+                isCastling = true;
                 int rookSourceCol = colDiff > 0 ? 7 : 0; // H or A
                 int rookDestCol = colDiff > 0 ? to.Column - 1 : to.Column + 1;
                 var rookFrom = ChessFields.FirstOrDefault(f => f.Row == from.Row && f.Column == rookSourceCol);
@@ -235,6 +237,7 @@ public partial class MainWindowViewModel : ObservableObject
         if ((figurToMove?.ToLower().Contains("_wb") == true || figurToMove?.ToLower().Contains("_sb") == true) && to.BoardPos == _chessState.EnPassantTarget)
         {
             // Capture the pawn behind the target square
+            isEnPassant = true;
             int captureRow = from.Row; // The row where the enemy pawn was
             int captureCol = to.Column;
             var capturedPawnField = ChessFields.FirstOrDefault(f => f.Row == captureRow && f.Column == captureCol);
@@ -242,6 +245,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         // --- UPDATE CHESS STATE ---
+        // ... (rest of the state updates before move execution)
 
         // Update moved flags
         if (from.BoardPos == "E1") _chessState.WhiteKingMoved = true;
@@ -265,7 +269,17 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         // --- EXECUTE BASE MOVE ---
-        GameHistory.Insert(0, moveText); // Newest at top
+        bool isCheckAfterMove = ChessEngine.IsInCheck(!isWhite, ChessFields);
+        string moveNotation = ChessEngine.GetMoveNotation(from, to, figurToMove, ChessFields, isEnPassant, isCastling, isCheckAfterMove);
+        string coordMove = ChessEngine.GetCoordMove(from, to, figurToMove);
+
+        GameHistory.Insert(0, new GameHistoryEntry 
+        { 
+            Move = moveNotation, 
+            Time = isWhite ? WhiteTimeStr : BlackTimeStr, 
+            IsWhite = isWhite,
+            CoordMove = coordMove
+        }); // Newest at top
         to.Figur = figurToMove;
         from.Figur = Files.Leer;
         from.Opacity = 1.0; // Reset opacity for the source field
@@ -367,11 +381,23 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task Restart()
+    {
+        if (AskConfirmationAsync != null)
+        {
+            if (!await AskConfirmationAsync("Spiel zurücksetzen?", "Möchten Sie das aktuelle Spiel wirklich zurücksetzen? Alle Züge und die Zeit gehen verloren.")) 
+                return;
+        }
+        ResetBoard();
+    }
+
+    [RelayCommand]
     private async Task Open()
     {
         if (!IsOriginalState() && AskConfirmationAsync != null)
         {
-            if (!await AskConfirmationAsync()) return;
+            if (!await AskConfirmationAsync("Stellung zurücksetzen?", "Der Verbindungsaufbau zum DGT Board wird die aktuelle manuelle Stellung durch die Board-Stellung ersetzen. Möchten Sie fortfahren?")) 
+                return;
         }
 
         TextBoxEnable = false;
@@ -510,25 +536,21 @@ public partial class MainWindowViewModel : ObservableObject
         
         if (placedField != null && _lastLiftedField != null)
         {
-            string moveText = $"{_lastLiftedField.BoardPos}-{placedField.BoardPos}";
             bool isWhite = placedFigur?.ToLower().Contains("_w") ?? false;
-
-            // Detect Castling in DGT
-            if (placedFigur?.ToLower().Contains("k") == true && Math.Abs(placedField.Column - _lastLiftedField.Column) == 2)
-            {
-                moveText = placedField.Column > _lastLiftedField.Column ? "O-O" : "O-O-O";
-            }
+            bool isCastling = placedFigur?.ToLower().Contains("k") == true && Math.Abs(placedField.Column - _lastLiftedField.Column) == 2;
+            bool isEnPassant = placedFigur?.ToLower().Contains("b") == true && placedField.BoardPos == _chessState.EnPassantTarget;
             
+            // Basic coordinate move for checking existence in history
+            string coordMove = $"{_lastLiftedField.BoardPos}-{placedField.BoardPos}";
+            if (isCastling) coordMove = placedField.Column > _lastLiftedField.Column ? "O-O" : "O-O-O";
+
             // Ignore Rook moves that are part of a castling (if King already moved)
             bool isRookCompletingCastling = false;
             if (placedFigur?.ToLower().Contains("t") == true)
             {
-                var lastMove = GameHistory.FirstOrDefault();
+                var lastMove = GameHistory.FirstOrDefault()?.Move;
                 if (lastMove == "O-O" || lastMove == "O-O-O")
                 {
-                    // Check if this rook move matches the castling side
-                    // If O-O, White Rook H1-F1 or Black Rook H8-F8
-                    // If O-O-O, White Rook A1-D1 or Black Rook A8-D8
                     if (isWhite)
                     {
                         if (lastMove == "O-O" && _lastLiftedField.BoardPos == "H1" && placedField.BoardPos == "F1") isRookCompletingCastling = true;
@@ -542,9 +564,18 @@ public partial class MainWindowViewModel : ObservableObject
                 }
             }
 
-            if (!isRookCompletingCastling && (!GameHistory.Contains(moveText) || GameHistory.FirstOrDefault() != moveText))
+            if (!isRookCompletingCastling && (!GameHistory.Any(h => h.CoordMove == coordMove) || GameHistory.FirstOrDefault()?.CoordMove != coordMove))
             {
-                GameHistory.Insert(0, moveText);
+                bool isCheckAfterMove = ChessEngine.IsInCheck(!isWhite, ChessFields);
+                string moveNotation = ChessEngine.GetMoveNotation(_lastLiftedField, placedField, placedFigur, ChessFields, isEnPassant, isCastling, isCheckAfterMove);
+
+                GameHistory.Insert(0, new GameHistoryEntry 
+                { 
+                    Move = moveNotation, 
+                    Time = isWhite ? WhiteTimeStr : BlackTimeStr, 
+                    IsWhite = isWhite,
+                    CoordMove = coordMove
+                });
                 
                 // Update ChessState from DGT move
                 if (_lastLiftedField.BoardPos == "E1") _chessState.WhiteKingMoved = true;
@@ -564,6 +595,7 @@ public partial class MainWindowViewModel : ObservableObject
                 }
 
                 IsWhiteTurn = !IsWhiteTurn;
+                CheckForCheck();
             }
             
             ClearHighlights();

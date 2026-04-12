@@ -322,5 +322,57 @@ namespace SchachZugCheckerWinUI.Logic
             bool targetIsWhite = field.Figur!.ToLower().Contains("_w");
             return isWhite != targetIsWhite;
         }
+
+        public static string GetMoveNotation(VisualChessField from, VisualChessField to, string? figur, IList<VisualChessField> allFields, bool isEnPassant, bool isCastling, bool isCheck)
+        {
+            if (isCastling)
+            {
+                return to.Column > from.Column ? "O-O" : "O-O-O";
+            }
+
+            string notation = "";
+            string fig = figur?.ToLower() ?? "";
+
+            // Piece letter
+            if (fig.Contains("_wt") || fig.Contains("_st")) notation += "R";
+            else if (fig.Contains("_ws") || fig.Contains("_ss")) notation += "N";
+            else if (fig.Contains("_wl") || fig.Contains("_sl")) notation += "B";
+            else if (fig.Contains("_wd") || fig.Contains("_sd")) notation += "Q";
+            else if (fig.Contains("_wk") || fig.Contains("_sk")) notation += "K";
+
+            // Capture
+            bool isCapture = !IsEmpty(to) || isEnPassant;
+            if (isCapture)
+            {
+                if (notation == "") // Pawn capture includes source file
+                {
+                    notation += from.BoardPos.Substring(0, 1).ToLower();
+                }
+                notation += "x";
+            }
+
+            // Destination square
+            notation += to.BoardPos.ToLower();
+
+            // Promotion detection (simple version - always assume Queen for now or skip letter)
+            if (notation.Length > 0 && notation[0] == ' ' && (to.Row == 0 || to.Row == 7))
+            {
+                // In actual notation it would be e8=Q
+            }
+
+            // Check
+            if (isCheck) notation += "+";
+
+            return notation;
+        }
+
+        public static string GetCoordMove(VisualChessField from, VisualChessField to, string? figur)
+        {
+            if (figur?.ToLower().Contains("k") == true && Math.Abs(to.Column - from.Column) == 2)
+            {
+                return to.Column > from.Column ? "O-O" : "O-O-O";
+            }
+            return $"{from.BoardPos}-{to.BoardPos}";
+        }
     }
 }

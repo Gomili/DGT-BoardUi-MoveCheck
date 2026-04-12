@@ -17,12 +17,12 @@ namespace SchachZugCheckerWinUI
             this.InitializeComponent();
             this.Title = "Schach Zug Checker WinUI";
 
-            ViewModel.AskConfirmationAsync = async () =>
+            ViewModel.AskConfirmationAsync = async (title, message) =>
             {
                 ContentDialog dialog = new ContentDialog
                 {
-                    Title = "Stellung zurücksetzen?",
-                    Content = "Der Verbindungsaufbau zum DGT Board wird die aktuelle manuelle Stellung durch die Board-Stellung ersetzen. Möchten Sie fortfahren?",
+                    Title = title,
+                    Content = message,
                     PrimaryButtonText = "Ja",
                     CloseButtonText = "Abbrechen",
                     DefaultButton = ContentDialogButton.Primary,
