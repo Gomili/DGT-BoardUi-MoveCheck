@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Text;
+using DgtUsbChessService;
 using Timer = System.Timers.Timer;
 
 namespace Test;
@@ -35,6 +37,9 @@ public class DgtSerDriver
 
     public bool ConState { get; set; } = false;
     public bool MoveHelp { get; set; } = false;
+    public FigurColor FigurColor { get; set; } = FigurColor.White;
+    public List<string> Moves { get; set; } = new List<string>();
+    public List<string> PossibleMoves { get; set; } = new List<string>();
 
     public void Open(string comport)
     {
@@ -96,8 +101,13 @@ public class DgtSerDriver
                 var bytes = Encoding.ASCII.GetBytes(ret);
                 if (_lastBytes is null || !_lastBytes.SequenceEqual(bytes))
                 {
+                    Figur? figur = RemoveFromBoard(bytes);
+                    if (figur != null)
+                    {
+                        PossibleMoves = BoardHelp.CheckPossibleMoves(figur);
+                        UpdateBoard?.Invoke(bytes);
+                    }
                     _lastBytes = bytes;
-                    UpdateBoard?.Invoke(bytes);
                 }
             }
         }
@@ -105,6 +115,20 @@ public class DgtSerDriver
         {
             Console.WriteLine(exception);
         }
+    }
+
+    private Figur? RemoveFromBoard(byte[] bytes)
+    {
+        if (_lastBytes != null)
+        {
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                if (bytes[i] != _lastBytes[i])
+                    return BoardHelp.GetFigurAndPos(_lastBytes[i], i, FigurColor);
+            }
+        }
+
+        return null;
     }
 
     private void ConvertToBoard(byte[] data)
@@ -116,7 +140,7 @@ public class DgtSerDriver
 
         for (int i = 3; i < data.Length; i++)
         {
-            Debug.Write(GetFigur(data[i]));
+            //Debug.Write(BoardHelp.GetFigur(data[i]));
             if (spalte == 8)
             {
                 Debug.WriteLine("");
@@ -124,41 +148,6 @@ public class DgtSerDriver
             }
             else
                 spalte++;
-        }
-    }
-
-    private string GetFigur(byte kennung)
-    {
-        switch ((Figuren)kennung)
-        {
-            case Figuren.Frei:
-                return "**";
-            case Figuren.WBauer:
-                return "WB";
-            case Figuren.WTurm:
-                return "WT";
-            case Figuren.WSpringer:
-                return "WS";
-            case Figuren.WLaeufer:
-                return "WL";
-            case Figuren.WDame:
-                return "WD";
-            case Figuren.WKoenig:
-                return "WK";
-            case Figuren.SBauer:
-                return "SB";
-            case Figuren.STurm:
-                return "ST";
-            case Figuren.SSpringer:
-                return "SS";
-            case Figuren.SLaeufer:
-                return "SL";
-            case Figuren.SDame:
-                return "SD";
-            case Figuren.SKoenig:
-                return "SK";
-            default:
-                throw new ArgumentOutOfRangeException(nameof(kennung), kennung, null);
         }
     }
 }
