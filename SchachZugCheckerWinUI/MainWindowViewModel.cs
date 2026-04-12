@@ -7,9 +7,11 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Dispatching;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SchachZugCheckerWinUI.Model;
+using SchachZugCheckerWinUI.Logic;
 using Test;
 
 namespace SchachZugCheckerWinUI;
@@ -18,72 +20,8 @@ public partial class MainWindowViewModel : ObservableObject
 {
     private readonly DispatcherQueue _dispatcherQueue;
 
-    #region BoardPropertys
-    [ObservableProperty] public partial VisualChessField A1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField A2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField A3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField A4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField A5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField A6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField A7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField A8 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField B8 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField C8 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField D8 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField E8 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField F8 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField G8 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H1 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H2 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H3 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H4 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H5 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H6 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H7 { get; set; } = new();
-    [ObservableProperty] public partial VisualChessField H8 { get; set; } = new();
-    #endregion
+    [ObservableProperty] public partial ObservableCollection<VisualChessField> ChessFields { get; set; } = new();
+    [ObservableProperty] public partial ObservableCollection<string> GameHistory { get; set; } = new();
 
     [ObservableProperty] public partial Visibility CloseVisi { get; set; } = Visibility.Collapsed;
     [ObservableProperty] public partial Visibility OpenVisi { get; set; } = Visibility.Visible;
@@ -91,6 +29,157 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] public partial bool TextBoxEnable { get; set; } = true;
     [ObservableProperty] public partial string Comport { get; set; } = "COM3";
     [ObservableProperty] public partial bool MoveHelp { get; set; } = false;
+    [ObservableProperty] public partial bool IsWhiteTurn { get; set; } = true;
+
+    public Brush WhiteTurnBrush => IsWhiteTurn ? new SolidColorBrush(Colors.White) : new SolidColorBrush(Colors.Transparent);
+    public Brush BlackTurnBrush => !IsWhiteTurn ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.Transparent);
+    public Brush WhiteTurnBorderBrush => IsWhiteTurn ? new SolidColorBrush(Colors.Gold) : new SolidColorBrush(Colors.Gray);
+    public Brush BlackTurnBorderBrush => !IsWhiteTurn ? new SolidColorBrush(Colors.Gold) : new SolidColorBrush(Colors.Gray);
+
+    private VisualChessField? _selectedField;
+    private VisualChessField? _lastLiftedField;
+
+    public Func<Task<bool>>? AskConfirmationAsync { get; set; }
+
+    [RelayCommand]
+    public void FieldTapped(VisualChessField field)
+    {
+        FieldClicked(field);
+    }
+
+    public void OnDragStarting(VisualChessField field)
+    {
+        if (_dgtDriver.ConState) return;
+        if (string.IsNullOrEmpty(field.Figur) || field.Figur == Files.Leer) return;
+
+        // Only allow moving own pieces
+        bool isWhitePiece = field.Figur.ToLower().Contains("_w");
+        if (isWhitePiece != IsWhiteTurn) return;
+
+        _selectedField = field;
+        if (MoveHelp)
+        {
+            HighlightLegalMoves(field);
+        }
+    }
+
+    public void OnDrop(VisualChessField toField)
+    {
+        if (_dgtDriver.ConState || _selectedField == null) return;
+        if (toField == _selectedField)
+        {
+            ClearHighlights();
+            _selectedField = null;
+            return;
+        }
+
+        var legalMoves = ChessEngine.GetLegalMoves(_selectedField, ChessFields);
+        if (legalMoves.Contains(toField.BoardPos))
+        {
+            ExecuteMove(_selectedField, toField);
+        }
+        else
+        {
+            ClearHighlights();
+            _selectedField = null;
+        }
+    }
+
+    public void OnDragCompleted()
+    {
+        // We only clear highlights if we didn't just execute a move (which clears highlights anyway)
+        // But to be safe:
+        ClearHighlights();
+        _selectedField = null;
+    }
+
+    [RelayCommand]
+    private void FieldClicked(VisualChessField field)
+    {
+        if (_dgtDriver.ConState) return;
+
+        if (_selectedField == null)
+        {
+            if (string.IsNullOrEmpty(field.Figur) || field.Figur == Files.Leer) return;
+
+            // Only allow selecting own pieces
+            bool isWhitePiece = field.Figur.ToLower().Contains("_w");
+            if (isWhitePiece != IsWhiteTurn) return;
+
+            _selectedField = field;
+            if (MoveHelp)
+            {
+                HighlightLegalMoves(field);
+            }
+        }
+        else
+        {
+            if (field == _selectedField)
+            {
+                ClearHighlights();
+                _selectedField = null;
+                return;
+            }
+
+            if (field.FieldState != FieldState.None) // Valid move detected via highlights
+            {
+                ExecuteMove(_selectedField, field);
+            }
+            else
+            {
+                // Select another figure or clear
+                ClearHighlights();
+                if (!string.IsNullOrEmpty(field.Figur) && field.Figur != Files.Leer)
+                {
+                    _selectedField = field;
+                    if (MoveHelp) HighlightLegalMoves(field);
+                }
+                else
+                {
+                    _selectedField = null;
+                }
+            }
+        }
+    }
+
+    private void HighlightLegalMoves(VisualChessField selectedField)
+    {
+        ClearHighlights();
+        var legalMoves = ChessEngine.GetLegalMoves(selectedField, ChessFields);
+        foreach (var pos in legalMoves)
+        {
+            var field = ChessFields.FirstOrDefault(f => f.BoardPos == pos);
+            if (field != null)
+            {
+                field.FieldState = string.IsNullOrEmpty(field.Figur) || field.Figur == Files.Leer 
+                                    ? FieldState.BlueState 
+                                    : FieldState.Red;
+            }
+        }
+    }
+
+    private void ClearHighlights()
+    {
+        foreach (var f in ChessFields) f.FieldState = FieldState.None;
+    }
+
+    private void ExecuteMove(VisualChessField from, VisualChessField to)
+    {
+        string moveText = $"{from.BoardPos}-{to.BoardPos}";
+        GameHistory.Insert(0, moveText); // Newest at top
+
+        to.Figur = from.Figur;
+        from.Figur = Files.Leer;
+
+        IsWhiteTurn = !IsWhiteTurn;
+        OnPropertyChanged(nameof(WhiteTurnBrush));
+        OnPropertyChanged(nameof(BlackTurnBrush));
+        OnPropertyChanged(nameof(WhiteTurnBorderBrush));
+        OnPropertyChanged(nameof(BlackTurnBorderBrush));
+
+        ClearHighlights();
+        _selectedField = null;
+    }
 
     partial void OnMoveHelpChanged(bool value)
     {
@@ -103,53 +192,62 @@ public partial class MainWindowViewModel : ObservableObject
     public MainWindowViewModel()
     {
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        InitializeBoard();
         ResetBoard();
         _dgtDriver = new DgtSerDriver();
         _dgtDriver.UpdateBoard += DgtSerDriverOnUpdateBoard;
     }
 
+    private void InitializeBoard()
+    {
+        ChessFields.Clear();
+        for (int r = 0; r < 8; r++)
+        {
+            for (int c = 0; c < 8; c++)
+            {
+                bool isDark = (r + c) % 2 != 0;
+                var field = new VisualChessField
+                {
+                    Row = r,
+                    Column = c,
+                    IsDark = isDark,
+                    BoardPos = $"{(char)('A' + c)}{8 - r}",
+                    Figur = Files.Leer
+                };
+                ChessFields.Add(field);
+            }
+        }
+    }
+
     private void ResetBoard()
     {
-        A1.Figur = Files.WT;
-        B1.Figur = Files.WS;
-        C1.Figur = Files.WL;
-        D1.Figur = Files.WD;
-        E1.Figur = Files.WK;
-        F1.Figur = Files.WL;
-        G1.Figur = Files.WS;
-        H1.Figur = Files.WT;
+        foreach (var field in ChessFields) field.Figur = Files.Leer;
 
-        A2.Figur = Files.WB;
-        B2.Figur = Files.WB;
-        C2.Figur = Files.WB;
-        D2.Figur = Files.WB;
-        E2.Figur = Files.WB;
-        F2.Figur = Files.WB;
-        G2.Figur = Files.WB;
-        H2.Figur = Files.WB;
+        SetFigur("A1", Files.WT); SetFigur("B1", Files.WS); SetFigur("C1", Files.WL); SetFigur("D1", Files.WD);
+        SetFigur("E1", Files.WK); SetFigur("F1", Files.WL); SetFigur("G1", Files.WS); SetFigur("H1", Files.WT);
+        SetFigur("A2", Files.WB); SetFigur("B2", Files.WB); SetFigur("C2", Files.WB); SetFigur("D2", Files.WB);
+        SetFigur("E2", Files.WB); SetFigur("F2", Files.WB); SetFigur("G2", Files.WB); SetFigur("H2", Files.WB);
 
-        A8.Figur = Files.ST;
-        B8.Figur = Files.SS;
-        C8.Figur = Files.SL;
-        D8.Figur = Files.SD;
-        E8.Figur = Files.SK;
-        F8.Figur = Files.SL;
-        G8.Figur = Files.SS;
-        H8.Figur = Files.ST;
+        SetFigur("A8", Files.ST); SetFigur("B8", Files.SS); SetFigur("C8", Files.SL); SetFigur("D8", Files.SD);
+        SetFigur("E8", Files.SK); SetFigur("F8", Files.SL); SetFigur("G8", Files.SS); SetFigur("H8", Files.ST);
+        SetFigur("A7", Files.SB); SetFigur("B7", Files.SB); SetFigur("C7", Files.SB); SetFigur("D7", Files.SB);
+        SetFigur("E7", Files.SB); SetFigur("F7", Files.SB); SetFigur("G7", Files.SB); SetFigur("H7", Files.SB);
+    }
 
-        A7.Figur = Files.SB;
-        B7.Figur = Files.SB;
-        C7.Figur = Files.SB;
-        D7.Figur = Files.SB;
-        E7.Figur = Files.SB;
-        F7.Figur = Files.SB;
-        G7.Figur = Files.SB;
-        H7.Figur = Files.SB;
+    private void SetFigur(string pos, string figur)
+    {
+        var field = ChessFields.FirstOrDefault(f => f.BoardPos == pos);
+        if (field != null) field.Figur = figur;
     }
 
     [RelayCommand]
     private async Task Open()
     {
+        if (!IsOriginalState() && AskConfirmationAsync != null)
+        {
+            if (!await AskConfirmationAsync()) return;
+        }
+
         TextBoxEnable = false;
         try
         {
@@ -239,80 +337,107 @@ public partial class MainWindowViewModel : ObservableObject
 
     public void UpdateBoard(byte[] data)
     {
-        if (data.Length < 67) return; 
+        if (data.Length < 67) return;
+
+        VisualChessField? liftedField = null;
+        VisualChessField? placedField = null;
+        string? placedFigur = null;
+
+        for (int i = 0; i < 64; i++)
+        {
+            var field = ChessFields[i];
+            var newFigur = (Figuren)data[i + 3];
+            string? newFigurPath = GetFigur(newFigur);
+
+            if (field.Figur != newFigurPath)
+            {
+                // Figured lifted?
+                if (IsNotEmpty(field.Figur) && IsEmpty(newFigurPath))
+                {
+                    liftedField = field;
+                }
+                // Figure placed?
+                else if (IsEmpty(field.Figur) && IsNotEmpty(newFigurPath))
+                {
+                    placedField = field;
+                    placedFigur = newFigurPath;
+                }
+                
+                field.Figur = newFigurPath;
+            }
+        }
+
+        if (liftedField != null)
+        {
+            _lastLiftedField = liftedField;
+            if (MoveHelp) HighlightLegalMoves(liftedField);
+        }
         
-        UpdateField(A8, (Figuren)data[3]);
-        UpdateField(B8, (Figuren)data[4]);
-        UpdateField(C8, (Figuren)data[5]);
-        UpdateField(D8, (Figuren)data[6]);
-        UpdateField(E8, (Figuren)data[7]);
-        UpdateField(F8, (Figuren)data[8]);
-        UpdateField(G8, (Figuren)data[9]);
-        UpdateField(H8, (Figuren)data[10]);
-
-        UpdateField(A7, (Figuren)data[11]);
-        UpdateField(B7, (Figuren)data[12]);
-        UpdateField(C7, (Figuren)data[13]);
-        UpdateField(D7, (Figuren)data[14]);
-        UpdateField(E7, (Figuren)data[15]);
-        UpdateField(F7, (Figuren)data[16]);
-        UpdateField(G7, (Figuren)data[17]);
-        UpdateField(H7, (Figuren)data[18]);
-
-        UpdateField(A6, (Figuren)data[19]);
-        UpdateField(B6, (Figuren)data[20]);
-        UpdateField(C6, (Figuren)data[21]);
-        UpdateField(D6, (Figuren)data[22]);
-        UpdateField(E6, (Figuren)data[23]);
-        UpdateField(F6, (Figuren)data[24]);
-        UpdateField(G6, (Figuren)data[25]);
-        UpdateField(H6, (Figuren)data[26]);
-
-        UpdateField(A5, (Figuren)data[27]);
-        UpdateField(B5, (Figuren)data[28]);
-        UpdateField(C5, (Figuren)data[29]);
-        UpdateField(D5, (Figuren)data[30]);
-        UpdateField(E5, (Figuren)data[31]);
-        UpdateField(F5, (Figuren)data[32]);
-        UpdateField(G5, (Figuren)data[33]);
-        UpdateField(H5, (Figuren)data[34]);
-
-        UpdateField(A4, (Figuren)data[35]);
-        UpdateField(B4, (Figuren)data[36]);
-        UpdateField(C4, (Figuren)data[37]);
-        UpdateField(D4, (Figuren)data[38]);
-        UpdateField(E4, (Figuren)data[39]);
-        UpdateField(F4, (Figuren)data[40]);
-        UpdateField(G4, (Figuren)data[41]);
-        UpdateField(H4, (Figuren)data[42]);
-
-        UpdateField(A3, (Figuren)data[43]);
-        UpdateField(B3, (Figuren)data[44]);
-        UpdateField(C3, (Figuren)data[45]);
-        UpdateField(D3, (Figuren)data[46]);
-        UpdateField(E3, (Figuren)data[47]);
-        UpdateField(F3, (Figuren)data[48]);
-        UpdateField(G3, (Figuren)data[49]);
-        UpdateField(H3, (Figuren)data[50]);
-
-        UpdateField(A2, (Figuren)data[51]);
-        UpdateField(B2, (Figuren)data[52]);
-        UpdateField(C2, (Figuren)data[53]);
-        UpdateField(D2, (Figuren)data[54]);
-        UpdateField(E2, (Figuren)data[55]);
-        UpdateField(F2, (Figuren)data[56]);
-        UpdateField(G2, (Figuren)data[57]);
-        UpdateField(H2, (Figuren)data[58]);
-
-        UpdateField(A1, (Figuren)data[59]);
-        UpdateField(B1, (Figuren)data[60]);
-        UpdateField(C1, (Figuren)data[61]);
-        UpdateField(D1, (Figuren)data[62]);
-        UpdateField(E1, (Figuren)data[63]);
-        UpdateField(F1, (Figuren)data[64]);
-        UpdateField(G1, (Figuren)data[65]);
-        UpdateField(H1, (Figuren)data[66]);
+        if (placedField != null && _lastLiftedField != null)
+        {
+            string moveText = $"{_lastLiftedField.BoardPos}-{placedField.BoardPos}";
+            if (!GameHistory.Contains(moveText) || GameHistory.FirstOrDefault() != moveText)
+            {
+                GameHistory.Insert(0, moveText);
+                IsWhiteTurn = !IsWhiteTurn;
+                OnPropertyChanged(nameof(WhiteTurnBrush));
+                OnPropertyChanged(nameof(BlackTurnBrush));
+                OnPropertyChanged(nameof(WhiteTurnBorderBrush));
+                OnPropertyChanged(nameof(BlackTurnBorderBrush));
+            }
+            
+            ClearHighlights();
+            _lastLiftedField = null;
+        }
     }
+
+    private bool IsOriginalState()
+    {
+        foreach (var field in ChessFields)
+        {
+            string expected = GetInitialFigurAt(field.BoardPos);
+            if (field.Figur != expected) return false;
+        }
+        return true;
+    }
+
+    private string GetInitialFigurAt(string pos)
+    {
+        if (pos.Length < 2) return Files.Leer;
+        char col = pos[0];
+        char row = pos[1];
+
+        if (row == '2') return Files.WB;
+        if (row == '7') return Files.SB;
+        if (row == '1')
+        {
+            return col switch
+            {
+                'A' or 'H' => Files.WT,
+                'B' or 'G' => Files.WS,
+                'C' or 'F' => Files.WL,
+                'D' => Files.WD,
+                'E' => Files.WK,
+                _ => Files.Leer
+            };
+        }
+        if (row == '8')
+        {
+            return col switch
+            {
+                'A' or 'H' => Files.ST,
+                'B' or 'G' => Files.SS,
+                'C' or 'F' => Files.SL,
+                'D' => Files.SD,
+                'E' => Files.SK,
+                _ => Files.Leer
+            };
+        }
+        return Files.Leer;
+    }
+
+    private bool IsEmpty(string? figur) => string.IsNullOrEmpty(figur) || figur == Files.Leer;
+    private bool IsNotEmpty(string? figur) => !IsEmpty(figur);
 
     private void UpdateField(VisualChessField field, Figuren newFigur)
     {

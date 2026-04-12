@@ -24,128 +24,92 @@
             <Button x:Name="bt_Open" Margin="4" Width="100" Content="Open" Command="{Binding OpenCommand}" Visibility="{Binding OpenVisi}"/>
             <Button x:Name="bt_Close" Margin="4" Width="100" Content="Close" Command="{Binding CloseCommand}" Visibility="{Binding CloseVisi}"/>
         </StackPanel>
-        
-        <Grid x:Name="grid" Grid.Row="1" Margin="8" Width="700" Height="700">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1" Margin="8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="750"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="8" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="7" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="6" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="5" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="4" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="5" Grid.Column="0" Text="3" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="6" Grid.Column="0" Text="2" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="7" Grid.Column="0" Text="1" VerticalAlignment="Center"/>
-            
-            <TextBlock Grid.Row="8" Grid.Column="8" Text="H" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Row="8" Grid.Column="7" Text="G" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Row="8" Grid.Column="6" Text="F" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Row="8" Grid.Column="5" Text="E" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Row="8" Grid.Column="4" Text="D" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Row="8" Grid.Column="3" Text="C" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Row="8" Grid.Column="2" Text="B" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Row="8" Grid.Column="1" Text="A" HorizontalAlignment="Center"/>
 
-            <!-- Row 1 (Index 7) -->
-            <Border Grid.Row="7" Grid.Column="1" Background="SaddleBrown"/><Image Margin="8" Grid.Row="7" Grid.Column="1" Source="{Binding A1.Figur}"/>
-            <Border Grid.Row="7" Grid.Column="2" Background="Wheat"/><Image Margin="8" Grid.Row="7" Grid.Column="2" Source="{Binding B1.Figur}"/>
-            <Border Grid.Row="7" Grid.Column="3" Background="SaddleBrown"/><Image Margin="8" Grid.Row="7" Grid.Column="3" Source="{Binding C1.Figur}"/>
-            <Border Grid.Row="7" Grid.Column="4" Background="Wheat"/><Image Margin="8" Grid.Row="7" Grid.Column="4" Source="{Binding D1.Figur}"/>
-            <Border Grid.Row="7" Grid.Column="5" Background="SaddleBrown"/><Image Margin="8" Grid.Row="7" Grid.Column="5" Source="{Binding E1.Figur}"/>
-            <Border Grid.Row="7" Grid.Column="6" Background="Wheat"/><Image Margin="8" Grid.Row="7" Grid.Column="6" Source="{Binding F1.Figur}"/>
-            <Border Grid.Row="7" Grid.Column="7" Background="SaddleBrown"/><Image Margin="8" Grid.Row="7" Grid.Column="7" Source="{Binding G1.Figur}"/>
-            <Border Grid.Row="7" Grid.Column="8" Background="Wheat"/><Image Margin="8" Grid.Row="7" Grid.Column="8" Source="{Binding H1.Figur}"/>
+            <Grid x:Name="BoardContainer" Width="750" Height="720" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="700"/>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="700"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- Row 2 (Index 6) -->
-            <Border Grid.Row="6" Grid.Column="1" Background="Wheat"/><Image Margin="8" Grid.Row="6" Grid.Column="1" Source="{Binding A2.Figur}"/>
-            <Border Grid.Row="6" Grid.Column="2" Background="SaddleBrown"/><Image Margin="8" Grid.Row="6" Grid.Column="2" Source="{Binding B2.Figur}"/>
-            <Border Grid.Row="6" Grid.Column="3" Background="Wheat"/><Image Margin="8" Grid.Row="6" Grid.Column="3" Source="{Binding C2.Figur}"/>
-            <Border Grid.Row="6" Grid.Column="4" Background="SaddleBrown"/><Image Margin="8" Grid.Row="6" Grid.Column="4" Source="{Binding D2.Figur}"/>
-            <Border Grid.Row="6" Grid.Column="5" Background="Wheat"/><Image Margin="8" Grid.Row="6" Grid.Column="5" Source="{Binding E2.Figur}"/>
-            <Border Grid.Row="6" Grid.Column="6" Background="SaddleBrown"/><Image Margin="8" Grid.Row="6" Grid.Column="6" Source="{Binding F2.Figur}"/>
-            <Border Grid.Row="6" Grid.Column="7" Background="Wheat"/><Image Margin="8" Grid.Row="6" Grid.Column="7" Source="{Binding G2.Figur}"/>
-            <Border Grid.Row="6" Grid.Column="8" Background="SaddleBrown"/><Image Margin="8" Grid.Row="6" Grid.Column="8" Source="{Binding H2.Figur}"/>
+                <!-- Turn Indicator -->
+                <Grid Grid.Row="0" Grid.Column="0" Width="30" VerticalAlignment="Stretch">
+                    <Border Background="{Binding BlackTurnBrush}" BorderBrush="{Binding BlackTurnBorderBrush}" BorderThickness="2" CornerRadius="50" Width="20" Height="20" VerticalAlignment="Top" Margin="4,34,4,0"/>
+                    <Border Background="{Binding WhiteTurnBrush}" BorderBrush="{Binding WhiteTurnBorderBrush}" BorderThickness="2" CornerRadius="50" Width="20" Height="20" VerticalAlignment="Bottom" Margin="4,0,4,34"/>
+                </Grid>
 
-            <!-- Row 3 (Index 5) -->
-            <Border Grid.Row="5" Grid.Column="1" Background="SaddleBrown"/><Image Margin="8" Grid.Row="5" Grid.Column="1" Source="{Binding A3.Figur}"/>
-            <Border Grid.Row="5" Grid.Column="2" Background="Wheat"/><Image Margin="8" Grid.Row="5" Grid.Column="2" Source="{Binding B3.Figur}"/>
-            <Border Grid.Row="5" Grid.Column="3" Background="SaddleBrown"/><Image Margin="8" Grid.Row="5" Grid.Column="3" Source="{Binding C3.Figur}"/>
-            <Border Grid.Row="5" Grid.Column="4" Background="Wheat"/><Image Margin="8" Grid.Row="5" Grid.Column="4" Source="{Binding D3.Figur}"/>
-            <Border Grid.Row="5" Grid.Column="5" Background="SaddleBrown"/><Image Margin="8" Grid.Row="5" Grid.Column="5" Source="{Binding E3.Figur}"/>
-            <Border Grid.Row="5" Grid.Column="6" Background="Wheat"/><Image Margin="8" Grid.Row="5" Grid.Column="6" Source="{Binding F3.Figur}"/>
-            <Border Grid.Row="5" Grid.Column="7" Background="SaddleBrown"/><Image Margin="8" Grid.Row="5" Grid.Column="7" Source="{Binding G3.Figur}"/>
-            <Border Grid.Row="5" Grid.Column="8" Background="Wheat"/><Image Margin="8" Grid.Row="5" Grid.Column="8" Source="{Binding H3.Figur}"/>
+                <!-- Row labels -->
+                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch" Width="20">
+                    <TextBlock Text="8" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="7" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="6" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="5" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="4" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="3" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="2" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="1" Height="87.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
 
-            <!-- Row 4 (Index 4) -->
-            <Border Grid.Row="4" Grid.Column="1" Background="Wheat"/><Image Margin="8" Grid.Row="4" Grid.Column="1" Source="{Binding A4.Figur}"/>
-            <Border Grid.Row="4" Grid.Column="2" Background="SaddleBrown"/><Image Margin="8" Grid.Row="4" Grid.Column="2" Source="{Binding B4.Figur}"/>
-            <Border Grid.Row="4" Grid.Column="3" Background="Wheat"/><Image Margin="8" Grid.Row="4" Grid.Column="3" Source="{Binding C4.Figur}"/>
-            <Border Grid.Row="4" Grid.Column="4" Background="SaddleBrown"/><Image Margin="8" Grid.Row="4" Grid.Column="4" Source="{Binding D4.Figur}"/>
-            <Border Grid.Row="4" Grid.Column="5" Background="Wheat"/><Image Margin="8" Grid.Row="4" Grid.Column="5" Source="{Binding E4.Figur}"/>
-            <Border Grid.Row="4" Grid.Column="6" Background="SaddleBrown"/><Image Margin="8" Grid.Row="4" Grid.Column="6" Source="{Binding F4.Figur}"/>
-            <Border Grid.Row="4" Grid.Column="7" Background="Wheat"/><Image Margin="8" Grid.Row="4" Grid.Column="7" Source="{Binding G4.Figur}"/>
-            <Border Grid.Row="4" Grid.Column="8" Background="SaddleBrown"/><Image Margin="8" Grid.Row="4" Grid.Column="8" Source="{Binding H4.Figur}"/>
+                <!-- Column labels -->
+                <Grid Grid.Row="1" Grid.Column="2" Height="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="A" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="B" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="C" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="D" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="4" Text="E" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="5" Text="F" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="6" Text="G" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="7" Text="H" HorizontalAlignment="Center"/>
+                </Grid>
 
-            <!-- Row 5 (Index 3) -->
-            <Border Grid.Row="3" Grid.Column="1" Background="SaddleBrown"/><Image Margin="8" Grid.Row="3" Grid.Column="1" Source="{Binding A5.Figur}"/>
-            <Border Grid.Row="3" Grid.Column="2" Background="Wheat"/><Image Margin="8" Grid.Row="3" Grid.Column="2" Source="{Binding B5.Figur}"/>
-            <Border Grid.Row="3" Grid.Column="3" Background="SaddleBrown"/><Image Margin="8" Grid.Row="3" Grid.Column="3" Source="{Binding C5.Figur}"/>
-            <Border Grid.Row="3" Grid.Column="4" Background="Wheat"/><Image Margin="8" Grid.Row="3" Grid.Column="4" Source="{Binding D5.Figur}"/>
-            <Border Grid.Row="3" Grid.Column="5" Background="SaddleBrown"/><Image Margin="8" Grid.Row="3" Grid.Column="5" Source="{Binding E5.Figur}"/>
-            <Border Grid.Row="3" Grid.Column="6" Background="Wheat"/><Image Margin="8" Grid.Row="3" Grid.Column="6" Source="{Binding F5.Figur}"/>
-            <Border Grid.Row="3" Grid.Column="7" Background="SaddleBrown"/><Image Margin="8" Grid.Row="3" Grid.Column="7" Source="{Binding G5.Figur}"/>
-            <Border Grid.Row="3" Grid.Column="8" Background="Wheat"/><Image Margin="8" Grid.Row="3" Grid.Column="8" Source="{Binding H5.Figur}"/>
+                <ItemsControl Grid.Row="0" Grid.Column="2" ItemsSource="{Binding ChessFields}" Background="Transparent">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="8" ItemWidth="87.5" ItemHeight="87.5"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="model:VisualChessField">
+                            <Grid Width="87.5" Height="87.5" AllowDrop="True" DragOver="Field_DragOver" Drop="Field_Drop" Background="Transparent" Tapped="Field_Tapped">
+                                <Border Background="{Binding BackgroundBrush}"/>
+                                <Image Source="{Binding Figur}" Margin="8" CanDrag="True" DragStarting="Image_DragStarting" DropCompleted="Image_DropCompleted"/>
+                                <Border BorderBrush="{Binding HighlightBrush}" BorderThickness="4" 
+                                        Visibility="{Binding HighlightVisibility}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
 
-            <!-- Row 6 (Index 2) -->
-            <Border Grid.Row="2" Grid.Column="1" Background="Wheat"/><Image Margin="8" Grid.Row="2" Grid.Column="1" Source="{Binding A6.Figur}"/>
-            <Border Grid.Row="2" Grid.Column="2" Background="SaddleBrown"/><Image Margin="8" Grid.Row="2" Grid.Column="2" Source="{Binding B6.Figur}"/>
-            <Border Grid.Row="2" Grid.Column="3" Background="Wheat"/><Image Margin="8" Grid.Row="2" Grid.Column="3" Source="{Binding C6.Figur}"/>
-            <Border Grid.Row="2" Grid.Column="4" Background="SaddleBrown"/><Image Margin="8" Grid.Row="2" Grid.Column="4" Source="{Binding D6.Figur}"/>
-            <Border Grid.Row="2" Grid.Column="5" Background="Wheat"/><Image Margin="8" Grid.Row="2" Grid.Column="5" Source="{Binding E6.Figur}"/>
-            <Border Grid.Row="2" Grid.Column="6" Background="SaddleBrown"/><Image Margin="8" Grid.Row="2" Grid.Column="6" Source="{Binding F6.Figur}"/>
-            <Border Grid.Row="2" Grid.Column="7" Background="Wheat"/><Image Margin="8" Grid.Row="2" Grid.Column="7" Source="{Binding G6.Figur}"/>
-            <Border Grid.Row="2" Grid.Column="8" Background="SaddleBrown"/><Image Margin="8" Grid.Row="2" Grid.Column="8" Source="{Binding H6.Figur}"/>
-
-            <!-- Row 7 (Index 1) -->
-            <Border Grid.Row="1" Grid.Column="1" Background="SaddleBrown"/><Image Margin="8" Grid.Row="1" Grid.Column="1" Source="{Binding A7.Figur}"/>
-            <Border Grid.Row="1" Grid.Column="2" Background="Wheat"/><Image Margin="8" Grid.Row="1" Grid.Column="2" Source="{Binding B7.Figur}"/>
-            <Border Grid.Row="1" Grid.Column="3" Background="SaddleBrown"/><Image Margin="8" Grid.Row="1" Grid.Column="3" Source="{Binding C7.Figur}"/>
-            <Border Grid.Row="1" Grid.Column="4" Background="Wheat"/><Image Margin="8" Grid.Row="1" Grid.Column="4" Source="{Binding D7.Figur}"/>
-            <Border Grid.Row="1" Grid.Column="5" Background="SaddleBrown"/><Image Margin="8" Grid.Row="1" Grid.Column="5" Source="{Binding E7.Figur}"/>
-            <Border Grid.Row="1" Grid.Column="6" Background="Wheat"/><Image Margin="8" Grid.Row="1" Grid.Column="6" Source="{Binding F7.Figur}"/>
-            <Border Grid.Row="1" Grid.Column="7" Background="SaddleBrown"/><Image Margin="8" Grid.Row="1" Grid.Column="7" Source="{Binding G7.Figur}"/>
-            <Border Grid.Row="1" Grid.Column="8" Background="Wheat"/><Image Margin="8" Grid.Row="1" Grid.Column="8" Source="{Binding H7.Figur}"/>
-
-            <!-- Row 8 (Index 0) -->
-            <Border Grid.Row="0" Grid.Column="1" Background="Wheat"/><Image Margin="8" Grid.Row="0" Grid.Column="1" Source="{Binding A8.Figur}"/>
-            <Border Grid.Row="0" Grid.Column="2" Background="SaddleBrown"/><Image Margin="8" Grid.Row="0" Grid.Column="2" Source="{Binding B8.Figur}"/>
-            <Border Grid.Row="0" Grid.Column="3" Background="Wheat"/><Image Margin="8" Grid.Row="0" Grid.Column="3" Source="{Binding C8.Figur}"/>
-            <Border Grid.Row="0" Grid.Column="4" Background="SaddleBrown"/><Image Margin="8" Grid.Row="0" Grid.Column="4" Source="{Binding D8.Figur}"/>
-            <Border Grid.Row="0" Grid.Column="5" Background="Wheat"/><Image Margin="8" Grid.Row="0" Grid.Column="5" Source="{Binding E8.Figur}"/>
-            <Border Grid.Row="0" Grid.Column="6" Background="SaddleBrown"/><Image Margin="8" Grid.Row="0" Grid.Column="6" Source="{Binding F8.Figur}"/>
-            <Border Grid.Row="0" Grid.Column="7" Background="Wheat"/><Image Margin="8" Grid.Row="0" Grid.Column="7" Source="{Binding G8.Figur}"/>
-            <Border Grid.Row="0" Grid.Column="8" Background="SaddleBrown"/><Image Margin="8" Grid.Row="0" Grid.Column="8" Source="{Binding H8.Figur}"/>
+            <!-- History Area -->
+            <Grid Grid.Column="1" Margin="10,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Spielverlauf" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+                <ListView Grid.Row="1" ItemsSource="{Binding GameHistory}" Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontSize="14"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

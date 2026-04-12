@@ -15,5 +15,22 @@ namespace SchachZugCheckerWinUI.Model
         [ObservableProperty] public partial FieldState FieldState { get; set; } = FieldState.None;
         [ObservableProperty] public partial int ArrayPos { get; set; }
         [ObservableProperty] public partial string BoardPos { get; set; } = string.Empty;
+        [ObservableProperty] public partial int Row { get; set; }
+        [ObservableProperty] public partial int Column { get; set; }
+        [ObservableProperty] public partial bool IsDark { get; set; }
+
+        public Microsoft.UI.Xaml.Media.Brush BackgroundBrush => IsDark ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.SaddleBrown) : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Wheat);
+        
+        public Microsoft.UI.Xaml.Visibility HighlightVisibility => FieldState == FieldState.None ? Microsoft.UI.Xaml.Visibility.Collapsed : Microsoft.UI.Xaml.Visibility.Visible;
+        
+        public Microsoft.UI.Xaml.Media.Brush HighlightBrush => FieldState == FieldState.BlueState ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Blue) : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+
+        // Notify UI about dependent property changes
+        partial void OnIsDarkChanged(bool value) => OnPropertyChanged(nameof(BackgroundBrush));
+        partial void OnFieldStateChanged(FieldState value)
+        {
+            OnPropertyChanged(nameof(HighlightVisibility));
+            OnPropertyChanged(nameof(HighlightBrush));
+        }
     }
 }
