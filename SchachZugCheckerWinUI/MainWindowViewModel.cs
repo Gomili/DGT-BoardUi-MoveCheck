@@ -53,6 +53,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private VisualChessField? _selectedField;
     private VisualChessField? _lastLiftedField;
+    private string? _lastLiftedFigur;
     private string? _draggedFigur;
 
     private ChessState _chessState = new();
@@ -181,10 +182,10 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    private void HighlightLegalMoves(VisualChessField selectedField)
+    private void HighlightLegalMoves(VisualChessField selectedField, string? overrideFigur = null)
     {
         ClearHighlights();
-        var legalMoves = ChessEngine.GetLegalMoves(selectedField, ChessFields, null, _chessState);
+        var legalMoves = ChessEngine.GetLegalMoves(selectedField, ChessFields, overrideFigur, _chessState);
         foreach (var pos in legalMoves)
         {
             var field = ChessFields.FirstOrDefault(f => f.BoardPos == pos);
@@ -281,6 +282,16 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (_dgtDriver is not null)
             _dgtDriver.MoveHelp = value;
+
+        if (value)
+        {
+            if (_lastLiftedField != null) HighlightLegalMoves(_lastLiftedField, _lastLiftedFigur);
+            else if (_selectedField != null) HighlightLegalMoves(_selectedField, _draggedFigur);
+        }
+        else
+        {
+            ClearHighlights();
+        }
     }
     
     private DgtSerDriver _dgtDriver { get; set; }
@@ -471,6 +482,7 @@ public partial class MainWindowViewModel : ObservableObject
                 if (IsNotEmpty(field.Figur) && IsEmpty(newFigurPath))
                 {
                     liftedField = field;
+                    _lastLiftedFigur = field.Figur;
                     
                     // Start timer if first move by white
                     if (!_timerStarted && (field.Figur?.ToLower().Contains("_w") ?? false) && IsWhiteTurn)
@@ -493,7 +505,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (liftedField != null)
         {
             _lastLiftedField = liftedField;
-            if (MoveHelp) HighlightLegalMoves(liftedField);
+            if (MoveHelp) HighlightLegalMoves(liftedField, _lastLiftedFigur);
         }
         
         if (placedField != null && _lastLiftedField != null)
@@ -556,6 +568,7 @@ public partial class MainWindowViewModel : ObservableObject
             
             ClearHighlights();
             _lastLiftedField = null;
+            _lastLiftedFigur = null;
         }
     }
 

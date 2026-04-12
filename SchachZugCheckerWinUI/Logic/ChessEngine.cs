@@ -157,7 +157,7 @@ namespace SchachZugCheckerWinUI.Logic
             var filteredMoves = new List<string>();
             foreach (var move in legalMoves)
             {
-                if (!WouldBeInCheck(selectedField, move, allFields, isWhite))
+                if (!WouldBeInCheck(selectedField, move, allFields, isWhite, currentFigur))
                 {
                     filteredMoves.Add(move);
                 }
@@ -166,19 +166,30 @@ namespace SchachZugCheckerWinUI.Logic
             return filteredMoves;
         }
 
-        private static bool WouldBeInCheck(VisualChessField from, string toPos, IList<VisualChessField> allFields, bool isWhite)
+        private static bool WouldBeInCheck(VisualChessField from, string toPos, IList<VisualChessField> allFields, bool isWhite, string? overrideFigur = null)
         {
             var toField = allFields.FirstOrDefault(f => f.BoardPos == toPos);
             if (toField == null) return false;
 
+            string? movingFigur = overrideFigur ?? from.Figur;
             string? oldFromFigur = from.Figur;
             string? oldToFigur = toField.Figur;
 
             from.Figur = Files.Leer;
-            toField.Figur = oldFromFigur;
+            toField.Figur = movingFigur;
 
             string kingTag = isWhite ? "_wk" : "_sk";
-            var kingField = allFields.FirstOrDefault(f => f.Figur != null && f.Figur.ToLower().Contains(kingTag));
+            
+            // If we are moving the king, its position is now at toField
+            VisualChessField? kingField;
+            if (movingFigur != null && movingFigur.ToLower().Contains(kingTag))
+            {
+                kingField = toField;
+            }
+            else
+            {
+                kingField = allFields.FirstOrDefault(f => f.Figur != null && f.Figur.ToLower().Contains(kingTag));
+            }
             
             bool inCheck = false;
             if (kingField != null)
