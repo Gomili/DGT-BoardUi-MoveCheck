@@ -27,25 +27,32 @@
 
         <Grid Grid.Row="1" Margin="8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="750"/>
+                <ColumnDefinition Width="800"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="BoardContainer" Width="750" Height="720" Grid.Column="0">
+            <Grid x:Name="BoardContainer" Width="800" Height="720" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="700"/>
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="20"/>
                     <ColumnDefinition Width="700"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Turn Indicator -->
-                <Grid Grid.Row="0" Grid.Column="0" Width="30" VerticalAlignment="Stretch">
-                    <Border Background="{Binding BlackTurnBrush}" BorderBrush="{Binding BlackTurnBorderBrush}" BorderThickness="2" CornerRadius="50" Width="20" Height="20" VerticalAlignment="Top" Margin="4,34,4,0"/>
-                    <Border Background="{Binding WhiteTurnBrush}" BorderBrush="{Binding WhiteTurnBorderBrush}" BorderThickness="2" CornerRadius="50" Width="20" Height="20" VerticalAlignment="Bottom" Margin="4,0,4,34"/>
+                <!-- Turn Indicator & Timer -->
+                <Grid Grid.Row="0" Grid.Column="0" Width="80" VerticalAlignment="Stretch">
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,34,0,0">
+                        <Border Background="{Binding BlackTurnBrush}" BorderBrush="{Binding BlackTurnBorderBrush}" BorderThickness="2" CornerRadius="50" Width="20" Height="20" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding BlackTimeStr}" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,34">
+                        <TextBlock Text="{Binding WhiteTimeStr}" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold" Margin="0,0,0,4"/>
+                        <Border Background="{Binding WhiteTurnBrush}" BorderBrush="{Binding WhiteTurnBorderBrush}" BorderThickness="2" CornerRadius="50" Width="20" Height="20" HorizontalAlignment="Center"/>
+                    </StackPanel>
                 </Grid>
 
                 <!-- Row labels -->

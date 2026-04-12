@@ -30,6 +30,14 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] public partial string Comport { get; set; } = "COM3";
     [ObservableProperty] public partial bool MoveHelp { get; set; } = false;
     [ObservableProperty] public partial bool IsWhiteTurn { get; set; } = true;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(WhiteTimeStr))] public partial TimeSpan WhiteTime { get; set; } = TimeSpan.Zero;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BlackTimeStr))] public partial TimeSpan BlackTime { get; set; } = TimeSpan.Zero;
+
+    public string WhiteTimeStr => WhiteTime.ToString(@"mm\:ss");
+    public string BlackTimeStr => BlackTime.ToString(@"mm\:ss");
+
+    private DispatcherTimer? _gameTimer;
+    private bool _timerStarted = false;
 
     public Brush WhiteTurnBrush => IsWhiteTurn ? new SolidColorBrush(Colors.White) : new SolidColorBrush(Colors.Transparent);
     public Brush BlackTurnBrush => !IsWhiteTurn ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.Transparent);
@@ -55,6 +63,13 @@ public partial class MainWindowViewModel : ObservableObject
         // Only allow moving own pieces
         bool isWhitePiece = field.Figur.ToLower().Contains("_w");
         if (isWhitePiece != IsWhiteTurn) return;
+
+        // Start timer if first move by white
+        if (!_timerStarted && isWhitePiece)
+        {
+            _timerStarted = true;
+            _gameTimer?.Start();
+        }
 
         _selectedField = field;
         if (MoveHelp)
@@ -194,6 +209,15 @@ public partial class MainWindowViewModel : ObservableObject
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         InitializeBoard();
         ResetBoard();
+        
+        _gameTimer = new DispatcherTimer();
+        _gameTimer.Interval = TimeSpan.FromSeconds(1);
+        _gameTimer.Tick += (s, e) =>
+        {
+            if (IsWhiteTurn) WhiteTime = WhiteTime.Add(TimeSpan.FromSeconds(1));
+            else BlackTime = BlackTime.Add(TimeSpan.FromSeconds(1));
+        };
+
         _dgtDriver = new DgtSerDriver();
         _dgtDriver.UpdateBoard += DgtSerDriverOnUpdateBoard;
     }
@@ -221,6 +245,11 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void ResetBoard()
     {
+        _timerStarted = false;
+        _gameTimer?.Stop();
+        WhiteTime = TimeSpan.Zero;
+        BlackTime = TimeSpan.Zero;
+
         foreach (var field in ChessFields) field.Figur = Files.Leer;
 
         SetFigur("A1", Files.WT); SetFigur("B1", Files.WS); SetFigur("C1", Files.WL); SetFigur("D1", Files.WD);
@@ -355,6 +384,13 @@ public partial class MainWindowViewModel : ObservableObject
                 if (IsNotEmpty(field.Figur) && IsEmpty(newFigurPath))
                 {
                     liftedField = field;
+                    
+                    // Start timer if first move by white
+                    if (!_timerStarted && (field.Figur?.ToLower().Contains("_w") ?? false) && IsWhiteTurn)
+                    {
+                        _timerStarted = true;
+                        _gameTimer?.Start();
+                    }
                 }
                 // Figure placed?
                 else if (IsEmpty(field.Figur) && IsNotEmpty(newFigurPath))
