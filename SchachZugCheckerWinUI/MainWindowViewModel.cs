@@ -495,6 +495,7 @@ public partial class MainWindowViewModel : ObservableObject
         VisualChessField? liftedField = null;
         VisualChessField? placedField = null;
         string? placedFigur = null;
+        string? oldPlacedFigur = null;
 
         for (int i = 0; i < 64; i++)
         {
@@ -504,24 +505,33 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (field.Figur != newFigurPath)
             {
-                // Figured lifted?
+                // Figure lifted?
                 if (IsNotEmpty(field.Figur) && IsEmpty(newFigurPath))
                 {
                     liftedField = field;
-                    _lastLiftedFigur = field.Figur;
+                    bool isWhiteFigur = field.Figur?.ToLower().Contains("_w") ?? false;
+                    
+                    // Only remember as the "source" of the move if it's the correct turn's color
+                    if (isWhiteFigur == IsWhiteTurn)
+                    {
+                        _lastLiftedField = field;
+                        _lastLiftedFigur = field.Figur;
+                    }
                     
                     // Start timer if first move by white
-                    if (!_timerStarted && (field.Figur?.ToLower().Contains("_w") ?? false) && IsWhiteTurn)
+                    if (!_timerStarted && isWhiteFigur && IsWhiteTurn)
                     {
                         _timerStarted = true;
                         _gameTimer?.Start();
                     }
                 }
-                // Figure placed?
-                else if (IsEmpty(field.Figur) && IsNotEmpty(newFigurPath))
+                
+                // Figure placed? (Either on an empty square or by capturing)
+                if (IsNotEmpty(newFigurPath))
                 {
                     placedField = field;
                     placedFigur = newFigurPath;
+                    oldPlacedFigur = field.Figur; // Store what was there before this update
                 }
                 
                 field.Figur = newFigurPath;
@@ -530,19 +540,19 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (liftedField != null)
         {
-            _lastLiftedField = liftedField;
-            if (MoveHelp) HighlightLegalMoves(liftedField, _lastLiftedFigur);
+            // Only highlight if the lifted figure is the one that was remembered (correct color)
+            if (liftedField == _lastLiftedField && MoveHelp) 
+            {
+                HighlightLegalMoves(_lastLiftedField, _lastLiftedFigur);
+            }
         }
         
         if (placedField != null && _lastLiftedField != null)
         {
             bool isWhite = placedFigur?.ToLower().Contains("_w") ?? false;
-            bool isCastling = placedFigur?.ToLower().Contains("k") == true && Math.Abs(placedField.Column - _lastLiftedField.Column) == 2;
-            bool isEnPassant = placedFigur?.ToLower().Contains("b") == true && placedField.BoardPos == _chessState.EnPassantTarget;
             
             // Basic coordinate move for checking existence in history
             string coordMove = $"{_lastLiftedField.BoardPos}-{placedField.BoardPos}";
-            if (isCastling) coordMove = placedField.Column > _lastLiftedField.Column ? "O-O" : "O-O-O";
 
             // Ignore Rook moves that are part of a castling (if King already moved)
             bool isRookCompletingCastling = false;
@@ -566,6 +576,34 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (!isRookCompletingCastling && (!GameHistory.Any(h => h.CoordMove == coordMove) || GameHistory.FirstOrDefault()?.CoordMove != coordMove))
             {
+                // Validate move legality
+                // FOR VALIDATION: Temporarily restore the target field to its previous state
+                // This is crucial because ChessEngine needs to see if it was an empty square or an opponent's piece.
+                // If we don't do this, ChessEngine sees our own piece (just placed) and thinks it's an illegal move to an occupied square.
+                string? currentFigurOnPlaced = placedField.Figur;
+                placedField.Figur = oldPlacedFigur;
+
+                var legalMoves = ChessEngine.GetLegalMoves(_lastLiftedField, ChessFields, _lastLiftedFigur, _chessState);
+                
+                placedField.Figur = currentFigurOnPlaced; // Restore current state
+
+                if (!legalMoves.Contains(placedField.BoardPos))
+                {
+                    // If it's not the same square (which would be just picking up and putting back)
+                    if (placedField.BoardPos != _lastLiftedField.BoardPos)
+                    {
+                        PlayWarningSound();
+                    }
+                    ClearHighlights();
+                    _lastLiftedField = null;
+                    _lastLiftedFigur = null;
+                    return;
+                }
+
+                bool isCastling = placedFigur?.ToLower().Contains("k") == true && Math.Abs(placedField.Column - _lastLiftedField.Column) == 2;
+                bool isEnPassant = placedFigur?.ToLower().Contains("b") == true && placedField.BoardPos == _chessState.EnPassantTarget;
+                if (isCastling) coordMove = placedField.Column > _lastLiftedField.Column ? "O-O" : "O-O-O";
+
                 bool isCheckAfterMove = ChessEngine.IsInCheck(!isWhite, ChessFields);
                 string moveNotation = ChessEngine.GetMoveNotation(_lastLiftedField, placedField, placedFigur, ChessFields, isEnPassant, isCastling, isCheckAfterMove);
 
@@ -618,6 +656,19 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 Debug.WriteLine($"[ViewModel] Failed to play sound: {ex.Message}");
             }
+        }
+    }
+
+    private void PlayWarningSound()
+    {
+        try
+        {
+            // Use GoBack for warnings - it's a bit more distinct as an error sound
+            ElementSoundPlayer.Play(ElementSoundKind.GoBack);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[ViewModel] Failed to play warning sound: {ex.Message}");
         }
     }
 
