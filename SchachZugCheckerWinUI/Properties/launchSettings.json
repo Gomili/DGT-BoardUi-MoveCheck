@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "SchachZugCheckerWinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SchachZugCheckerWinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
