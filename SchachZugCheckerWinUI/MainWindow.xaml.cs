@@ -4,6 +4,9 @@ using Microsoft.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer;
 using System;
 using System.Threading.Tasks;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using WinRT.Interop;
 using SchachZugCheckerWinUI.Model;
 
 namespace SchachZugCheckerWinUI
@@ -16,6 +19,18 @@ namespace SchachZugCheckerWinUI
         {
             this.InitializeComponent();
             this.Title = "Schach Zug Checker WinUI";
+
+            // Set window size to 1920x1080 and restrict resizing
+            IntPtr hWnd = WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            appWindow.Resize(new Windows.Graphics.SizeInt32(1920, 1080));
+
+            if (appWindow.Presenter is OverlappedPresenter presenter)
+            {
+                presenter.IsResizable = false;
+                presenter.IsMaximizable = false;
+            }
 
             ViewModel.AskConfirmationAsync = async (title, message) =>
             {
