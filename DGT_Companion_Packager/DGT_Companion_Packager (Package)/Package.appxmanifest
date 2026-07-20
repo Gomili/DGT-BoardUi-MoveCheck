@@ -11,7 +11,7 @@
   <Identity
     Name="33072Servicetech.DGTCompanion"
     Publisher="CN=6CA16A03-A203-4BB7-9C41-DCC78F2BE658"
-    Version="1.0.0.0" />
+    Version="1.0.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="f80eb5f2-e632-4904-aaa9-a3f366d53ef0" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

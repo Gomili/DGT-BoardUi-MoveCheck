@@ -24,12 +24,12 @@ namespace SchachZugCheckerWinUI
             IntPtr hWnd = WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-            appWindow.Resize(new Windows.Graphics.SizeInt32(1920, 1080));
+            appWindow.Resize(new Windows.Graphics.SizeInt32(1600, 1000));
 
             if (appWindow.Presenter is OverlappedPresenter presenter)
             {
-                presenter.IsResizable = false;
-                presenter.IsMaximizable = false;
+                presenter.IsResizable = true;
+                presenter.IsMaximizable = true;
             }
 
             ViewModel.AskConfirmationAsync = async (title, message) =>

@@ -13,8 +13,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <StackPanel Margin="0,0,8,0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right">
-            <TextBlock Margin="4" Text="Move Help:" VerticalAlignment="Center" FontSize="16"/>
+        <StackPanel Margin="0,0,8,0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center">
+            <TextBlock Margin="4" Text="Zug Hilfe:" VerticalAlignment="Center" FontSize="16"/>
             <ToggleSwitch x:Name="ts_MoveHelp" Margin="4,4,16,4" IsOn="{Binding MoveHelp, Mode=TwoWay}" />
             
             <TextBlock Margin="4" Text="Connect:" VerticalAlignment="Center" FontSize="16"/>
